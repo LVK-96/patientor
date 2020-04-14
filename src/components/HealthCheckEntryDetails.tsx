@@ -5,7 +5,6 @@ import { HealthCheckEntry } from "../types";
 import HealthRatingBar from "./HealthRatingBar";
 
 const HealthCheckEntryDetails: React.FC<{ entry: HealthCheckEntry }> = ({ entry }) => {
-  console.log(entry.healthCheckRating);
   return (
     <>
       <Card.Description>

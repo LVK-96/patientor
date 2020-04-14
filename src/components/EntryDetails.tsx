@@ -13,15 +13,15 @@ const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
   switch (entry.type) {
     case "Hospital":
       additionalInfo = <HospitalEntryDetails entry={entry} />;
-      correctIcon = <Icon name="ambulance" />
+      correctIcon = <Icon name="ambulance" />;
       break;
     case "OccupationalHealthcare":
       additionalInfo = <OccupationalEntryDetails entry={entry} />;
-      correctIcon = <Icon name="doctor" />
+      correctIcon = <Icon name="doctor" />;
       break;
     case "HealthCheck":
       additionalInfo = <HealthCheckEntryDetails entry={entry} />;
-      correctIcon = <Icon name="stethoscope" />
+      correctIcon = <Icon name="stethoscope" />;
       break;
     default:
       assertNever(entry);

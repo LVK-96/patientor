@@ -1,17 +1,27 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Container, Card, Icon, List } from "semantic-ui-react";
-import { v4 as uuidv4 } from "uuid";
+import { Container, Card, Icon, List, Divider, Button } from "semantic-ui-react";
 
-import { useStateValue, updatePatient } from "../state";
+import { useStateValue, updatePatient, addEntry } from "../state";
 import { apiBaseUrl } from "../constants";
-import { Patient } from "../types";
+import { Patient, Entry } from "../types";
 import EntryDetails from "../components/EntryDetails";
+import AddEntryModal from "../AddEntryModal";
+import { EntryFormValues } from "../AddEntryModal/AddEntryForm";
 
 const PatientPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [{ patients }, dispatch] = useStateValue();
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string | undefined>();
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
 
   const patient = Object.values(patients).find((p) => p.id === id);
   useEffect(() => {
@@ -29,6 +39,22 @@ const PatientPage: React.FC = () => {
     if(!!patient && !patient.ssn)
       fetchPatientInfo();
   }, [dispatch, id, patient]);
+
+  const submitNewEntry = async (values: EntryFormValues) => {
+    if (patient) {
+      try {
+        const { data: newEntry } = await axios.post<Entry>(
+          `${apiBaseUrl}/patients/${patient.id}/entries`, values
+        );
+        console.log(newEntry);
+        dispatch(addEntry(newEntry, patient.id));
+        closeModal();
+      } catch (e) {
+        console.error(e.response.data);
+        setError(e.response.data.error);
+      }
+    }
+  };
 
   let content;
   if (patient) {
@@ -48,7 +74,7 @@ const PatientPage: React.FC = () => {
     if (patient.entries) {
       entries =
         <>
-          {patient.entries.map(e => <EntryDetails key={uuidv4()} entry={e} />)}
+          {patient.entries.map(e => <EntryDetails key={e.id} entry={e} />)}
         </>;
     }
 
@@ -61,9 +87,12 @@ const PatientPage: React.FC = () => {
           <List>
             <List.Item>{patient.occupation}</List.Item>
             <List.Item>{patient.ssn}</List.Item>
-            {entries}
           </List>
         </Card.Description>
+        <Divider />
+        <Card.Group centered={true}>
+          {entries}
+        </Card.Group>
       </>;
   } else {
     content =
@@ -77,11 +106,18 @@ const PatientPage: React.FC = () => {
   return (
     <div className="App">
       <Container textAlign="left">
-        <Card>
+        <Card fluid={true}>
           <Card.Content>
             {content}
           </Card.Content>
         </Card>
+        <AddEntryModal
+          modalOpen={modalOpen}
+          onSubmit={submitNewEntry}
+          error={error}
+          onClose={closeModal}
+        />
+        <Button onClick={openModal}>Add a New Entry</Button>
       </Container>
     </div>
   );
