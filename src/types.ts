@@ -41,17 +41,17 @@ interface BaseEntryWithDiagnosisCodes extends BaseEntry {
   diagnosisCodes?: string[];
 }
 
-interface HospitalEntry extends BaseEntryWithDiagnosisCodes {
+export interface HospitalEntry extends BaseEntryWithDiagnosisCodes {
   type: 'Hospital';
   discharge: Discharge;
 }
 
-interface HealthCheckEntry extends BaseEntry {
+export interface HealthCheckEntry extends BaseEntry {
   type: 'HealthCheck';
   healthCheckRating: number;
 }
 
-interface OccupationalHealthcareEntry extends BaseEntryWithDiagnosisCodes {
+export interface OccupationalHealthcareEntry extends BaseEntryWithDiagnosisCodes {
   type: 'OccupationalHealthcare';
   employerName: string;
   sickLeave?: SickLeave;
