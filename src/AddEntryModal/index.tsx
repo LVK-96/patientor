@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Segment } from 'semantic-ui-react';
-import AddEntryFormBase from './AddEntryFormBase';
+import AddEntryForm from './AddEntryForm';
 import { HospitalEntryFormValues } from "./AddHospitalEntryForm";
 import { HealthCheckEntryFormValues } from "./AddHealthCheckEntryForm";
 import { OccupationalEntryFormValues } from "./AddOccupationalEntryForm";
@@ -19,7 +19,7 @@ const AddEntryModal = ({ modalOpen, onClose, onSubmit, error }: Props) => (
     <Modal.Header>Add a new entry</Modal.Header>
     <Modal.Content>
       {error && <Segment inverted color="red">{`Error: ${error}`}</Segment>}
-      <AddEntryFormBase onSubmit={onSubmit} onClose={onClose} />
+      <AddEntryForm onSubmit={onSubmit} onClose={onClose} />
     </Modal.Content>
   </Modal>
 );

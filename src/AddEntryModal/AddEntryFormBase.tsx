@@ -1,14 +1,11 @@
-import React, { useState } from "react";
-import AddHospitalEntryForm from "./AddHospitalEntryForm";
-import AddOccupationalEntryForm from "./AddOccupationalEntryForm";
-import AddHealthCheckEntryForm from "./AddHealthCheckEntryForm";
+import React, { Dispatch, SetStateAction } from "react";
+import { Field } from "formik";
+import { Grid, Button } from "semantic-ui-react";
 
-import { Submit } from "./index";
-
-interface Props {
-  onClose: () => void;
-  onSubmit: Submit;
-}
+import { TextField, SelectFieldEntry } from "../AddPatientModal/FormField";
+import { HospitalEntryFormValues } from "./AddHospitalEntryForm";
+import { HealthCheckEntryFormValues } from "./AddHealthCheckEntryForm";
+import { OccupationalEntryFormValues } from "./AddOccupationalEntryForm";
 
 export type TypeOption = {
   value: "Hospital" | "OccupationalHealthcare" | "HealthCheck";
@@ -21,18 +18,82 @@ export const typeOptions: TypeOption[] = [
   { value: "HealthCheck", label: "Health check" }
 ];
 
-export const AddEntryFormBase: React.FC<Props> = ({ onSubmit, onClose }) => {
-  const [formType, setFormType] = useState("Hospital");
-  switch (formType) {
-    case "Hospital":
-      return <AddHospitalEntryForm onSubmit={onSubmit} onCancel={onClose} setFormType={setFormType} />;
-    case "OccupationalHealthcare":
-      return <AddOccupationalEntryForm onSubmit={onSubmit} onCancel={onClose} setFormType={setFormType} />;
-    case "HealthCheck":
-      return <AddHealthCheckEntryForm onSubmit={onSubmit} onCancel={onClose} setFormType={setFormType} />;
-    default:
-      return <AddHospitalEntryForm onSubmit={onSubmit} onCancel={onClose} setFormType={setFormType} />;
+type ValidatorError = { [field: string]: string };
+export type EntryToSubmit = HospitalEntryFormValues | OccupationalEntryFormValues | HealthCheckEntryFormValues;
+
+export const requiredErrorMsg = "Field is required";
+
+export const commonFieldValidator = (values: EntryToSubmit, errors: ValidatorError) => {
+  if (!values.type) {
+    errors.type = requiredErrorMsg;
   }
+  if (!values.specialist) {
+    errors.specialist = requiredErrorMsg;
+  }
+  if (!values.date) {
+    errors.date = requiredErrorMsg;
+  }
+  if (!values.description) {
+    errors.description = requiredErrorMsg;
+  }
+  return errors;
 };
 
-export default AddEntryFormBase;
+interface FieldsProps {
+  setFormType: Dispatch<SetStateAction<string>>;
+}
+
+export const CommonFormFields: React.FC<FieldsProps> = ({ setFormType }) => (
+  <>
+    <SelectFieldEntry
+      label="Type"
+      name="type"
+      options={typeOptions}
+      setFormType={setFormType}
+    />
+    <Field
+      label="Specialist"
+      placeholder="Specialist"
+      name="specialist"
+      component={TextField}
+    />
+    <Field
+      label="Date"
+      placeholder="YYYY-MM-DD"
+      name="date"
+      component={TextField}
+    />
+    <Field
+      label="Description"
+      placeholder="Description"
+      name="description"
+      component={TextField}
+    />
+  </>
+);
+
+interface SubmitProps {
+  onCancel: () => void;
+  dirty: boolean;
+  isValid: boolean;
+}
+
+export const SubmitGrid: React.FC<SubmitProps> = ({ onCancel, dirty, isValid }) => (
+  <Grid>
+    <Grid.Column floated="left" width={5}>
+      <Button type="button" onClick={onCancel} color="red">
+        Cancel
+      </Button>
+    </Grid.Column>
+    <Grid.Column floated="right" width={5}>
+      <Button
+        type="submit"
+        floated="right"
+        color="green"
+        disabled={!dirty || !isValid}
+      >
+        Add
+      </Button>
+    </Grid.Column>
+  </Grid>
+);

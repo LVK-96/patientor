@@ -2,12 +2,14 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Container, Card, Icon, List, Divider, Button } from "semantic-ui-react";
+import _ from "lodash";
 
 import { useStateValue, updatePatient, addEntry } from "../state";
 import { apiBaseUrl } from "../constants";
 import { Patient, Entry } from "../types";
 import EntryDetails from "../components/EntryDetails";
 import AddEntryModal from "../AddEntryModal";
+import { EntryToSubmit } from "../AddEntryModal/AddEntryFormBase";
 
 const PatientPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -39,11 +41,21 @@ const PatientPage: React.FC = () => {
       fetchPatientInfo();
   }, [dispatch, id, patient]);
 
-  const submitNewEntry = async (values: any) => {
+  const submitNewEntry = async (values: EntryToSubmit) => {
     if (patient) {
       try {
+        let parsedValues = values;
+        if (
+          // TODO: Is there some nicer way to have optional fields?
+          values.type === "OccupationalHealthcare"
+          && values.sickLeave
+          && values.sickLeave.startDate === ""
+          && values.sickLeave.endDate === ""
+        ) {
+          parsedValues = _.omit(values, "sickLeave");
+        }
         const { data: newEntry } = await axios.post<Entry>(
-          `${apiBaseUrl}/patients/${patient.id}/entries`, values
+          `${apiBaseUrl}/patients/${patient.id}/entries`, parsedValues
         );
         dispatch(addEntry(newEntry, patient.id));
         closeModal();

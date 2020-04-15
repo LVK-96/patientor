@@ -1,10 +1,9 @@
 import React, { Dispatch, SetStateAction} from "react";
-import { Grid, Button } from "semantic-ui-react";
 import { Field, Formik, Form } from "formik";
 
-import { TextField, SelectFieldEntry, DiagnosisSelection } from "../AddPatientModal/FormField";
+import { TextField, DiagnosisSelection } from "../AddPatientModal/FormField";
 import { HospitalEntry } from "../types";
-import { typeOptions } from "./AddEntryFormBase";
+import { SubmitGrid, CommonFormFields, commonFieldValidator, requiredErrorMsg } from "./AddEntryFormBase";
 import { useStateValue } from "../state";
 
 export type HospitalEntryFormValues = Omit<HospitalEntry, "id">;
@@ -28,19 +27,13 @@ export const AddHospitalEntryForm: React.FC<Props> = ({ onSubmit, onCancel, setF
       }}
       onSubmit={onSubmit}
       validate={(values) => {
-        const requiredError = "Field is required";
-        const errors: { [field: string]: string } = {};
-        if (!values.type) {
-          errors.type = requiredError;
+        let errors: { [field: string]: string } = {};
+        errors = commonFieldValidator(values, errors);
+        if (!values.discharge.date) {
+          errors.dischargeDate = requiredErrorMsg;
         }
-        if (!values.specialist) {
-          errors.specialist = requiredError;
-        }
-        if (!values.date) {
-          errors.date = requiredError;
-        }
-        if (!values.description) {
-          errors.description = requiredError;
+        if (!values.discharge.criteria) {
+          errors.dischargeCriteria = requiredErrorMsg;
         }
         return errors;
       }}
@@ -48,30 +41,7 @@ export const AddHospitalEntryForm: React.FC<Props> = ({ onSubmit, onCancel, setF
       {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
         return (
           <Form className="form ui">
-            <SelectFieldEntry
-              label="Type"
-              name="type"
-              options={typeOptions}
-              setFormType={setFormType}
-            />
-            <Field
-              label="Specialist"
-              placeholder="Specialist"
-              name="specialist"
-              component={TextField}
-            />
-            <Field
-              label="Date"
-              placeholder="YYYY-MM-DD"
-              name="date"
-              component={TextField}
-            />
-            <Field
-              label="Description"
-              placeholder="Description"
-              name="description"
-              component={TextField}
-            />
+            <CommonFormFields setFormType={setFormType} />
             <DiagnosisSelection
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}
@@ -89,23 +59,7 @@ export const AddHospitalEntryForm: React.FC<Props> = ({ onSubmit, onCancel, setF
               name="discharge.criteria"
               component={TextField}
             />
-            <Grid>
-              <Grid.Column floated="left" width={5}>
-                <Button type="button" onClick={onCancel} color="red">
-                  Cancel
-                </Button>
-              </Grid.Column>
-              <Grid.Column floated="right" width={5}>
-                <Button
-                  type="submit"
-                  floated="right"
-                  color="green"
-                  disabled={!dirty || !isValid}
-                >
-                  Add
-                </Button>
-              </Grid.Column>
-            </Grid>
+            <SubmitGrid onCancel={onCancel} dirty={dirty} isValid={isValid} />
           </Form>
         );
       }}
