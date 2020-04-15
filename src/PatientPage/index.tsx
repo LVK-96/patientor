@@ -81,10 +81,13 @@ const PatientPage: React.FC = () => {
     }
 
     let entries = null;
-    if (patient.entries) {
+    if (patient.entries && patient.entries.length > 0) {
       entries =
         <>
-          {patient.entries.map(e => <EntryDetails key={e.id} entry={e} />)}
+          <Divider />
+          <Card.Group centered={true}>
+            {patient.entries.map(e => <EntryDetails key={e.id} entry={e} />)}
+          </Card.Group>
         </>;
     }
 
@@ -99,10 +102,7 @@ const PatientPage: React.FC = () => {
             <List.Item>{patient.ssn}</List.Item>
           </List>
         </Card.Description>
-        <Divider />
-        <Card.Group centered={true}>
-          {entries}
-        </Card.Group>
+        {entries}
       </>;
   } else {
     content =

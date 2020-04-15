@@ -1,16 +1,19 @@
 import React from "react";
-import { Card } from "semantic-ui-react";
+import { Card, Divider } from "semantic-ui-react";
 
 import { OccupationalHealthcareEntry } from "../types";
 import DiagnosisCodes from "../components/DiagnosisCodes";
 
 const OccupationalEntryDetails: React.FC<{ entry: OccupationalHealthcareEntry }> = ({ entry }) => {
   let diagnosisCodes = null;
-  if (entry.diagnosisCodes) {
+  if (entry.diagnosisCodes && entry.diagnosisCodes.length > 0) {
     diagnosisCodes =
-      <Card.Description>
-        <DiagnosisCodes diagnosisList={entry.diagnosisCodes} />
-      </Card.Description>;
+      <>
+        <Divider />
+        <Card.Description>
+          <DiagnosisCodes diagnosisList={entry.diagnosisCodes} />
+        </Card.Description>
+      </>;
   }
 
   let sickLeave = null;
