@@ -1,8 +1,8 @@
-import React from "react";
+import React, { Dispatch, SetStateAction} from "react";
 import { ErrorMessage, Field, FieldProps, FormikProps } from "formik";
 import { Dropdown, DropdownProps, Form } from "semantic-ui-react";
 import { Diagnose, Gender } from "../types";
-import { TypeOption } from "../AddEntryModal/AddEntryForm";
+import { TypeOption } from "../AddEntryModal/AddEntryFormBase";
 
 // structure of a single option
 export type GenderOption = {
@@ -38,15 +38,18 @@ export const SelectField: React.FC<SelectFieldProps> = ({
 type SelectFieldPropsEntry = {
   name: string;
   label: string;
+  setFormType: Dispatch<SetStateAction<string>>;
   options: TypeOption[];
 };
 
 export const SelectFieldEntry: React.FC<SelectFieldPropsEntry> = ({
   name,
   label,
+  setFormType,
   options
 }: SelectFieldPropsEntry) => (
-  <Form.Field>
+  // eslint-disable-next-line
+  <Form.Field onChange={(e: any) => setFormType(e.target.value)}>
     <label>{label}</label>
     <Field as="select" name={name} className="ui dropdown">
       {options.map(option => (

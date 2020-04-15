@@ -8,7 +8,6 @@ import { apiBaseUrl } from "../constants";
 import { Patient, Entry } from "../types";
 import EntryDetails from "../components/EntryDetails";
 import AddEntryModal from "../AddEntryModal";
-import { EntryFormValues } from "../AddEntryModal/AddEntryForm";
 
 const PatientPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -40,13 +39,12 @@ const PatientPage: React.FC = () => {
       fetchPatientInfo();
   }, [dispatch, id, patient]);
 
-  const submitNewEntry = async (values: EntryFormValues) => {
+  const submitNewEntry = async (values: any) => {
     if (patient) {
       try {
         const { data: newEntry } = await axios.post<Entry>(
           `${apiBaseUrl}/patients/${patient.id}/entries`, values
         );
-        console.log(newEntry);
         dispatch(addEntry(newEntry, patient.id));
         closeModal();
       } catch (e) {

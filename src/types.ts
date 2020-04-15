@@ -21,10 +21,10 @@ export interface Patient {
 }
 
 interface BaseEntry {
-    id: string;
-    date: string;
-    specialist: string;
-    description: string;
+  id: string;
+  date: string;
+  specialist: string;
+  description: string;
 }
 
 interface Discharge {
