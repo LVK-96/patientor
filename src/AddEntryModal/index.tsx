@@ -3,8 +3,9 @@ import { Modal, Segment } from 'semantic-ui-react';
 import AddEntryFormBase from './AddEntryFormBase';
 import { HospitalEntryFormValues } from "./AddHospitalEntryForm";
 import { HealthCheckEntryFormValues } from "./AddHealthCheckEntryForm";
+import { OccupationalEntryFormValues } from "./AddOccupationalEntryForm";
 
-export type Submit = (values: HospitalEntryFormValues | HealthCheckEntryFormValues) => void;
+export type Submit = (values: HospitalEntryFormValues | OccupationalEntryFormValues | HealthCheckEntryFormValues) => void;
 
 interface Props {
   modalOpen: boolean;

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import AddHospitalEntryForm from "./AddHospitalEntryForm";
+import AddOccupationalEntryForm from "./AddOccupationalEntryForm";
 import AddHealthCheckEntryForm from "./AddHealthCheckEntryForm";
 
 import { Submit } from "./index";
@@ -26,7 +27,7 @@ export const AddEntryFormBase: React.FC<Props> = ({ onSubmit, onClose }) => {
     case "Hospital":
       return <AddHospitalEntryForm onSubmit={onSubmit} onCancel={onClose} setFormType={setFormType} />;
     case "OccupationalHealthcare":
-      return <AddHospitalEntryForm onSubmit={onSubmit} onCancel={onClose} setFormType={setFormType} />;
+      return <AddOccupationalEntryForm onSubmit={onSubmit} onCancel={onClose} setFormType={setFormType} />;
     case "HealthCheck":
       return <AddHealthCheckEntryForm onSubmit={onSubmit} onCancel={onClose} setFormType={setFormType} />;
     default:
